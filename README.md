@@ -14,7 +14,7 @@
 - get a randomly selected music everyday at 11AM (GMT+2)
 - ask for music specifying length and mood you prefer at the moment
 
+-----------------
 
 ### Special thanks to: 
 * [Alessandro Gaballo](https://github.com/alegaballo)
-
