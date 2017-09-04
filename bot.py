@@ -8,22 +8,14 @@ import telegram
 import pandas as pd 
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 import logging
-
 from apiclient.discovery import build
 from apiclient.errors import HttpError
 from oauth2client.tools import argparser
 
 #### CONSTANTS ####
-boring_time = "12:00" # daily music suggested at this time
+boring_time = "12:30" # daily music suggested at this time
 music_file = "MariaMusic.tsv" # where the music comes from
 
-music_df = pd.read_csv(music_file, sep="\t", dtype=(str))
-number_of_tracks = music_df.shape[0]
-
-# TODO: remove hard-coded list and fix the following 2 lines
-# music_df.mood = music_df.mood.apply(lambda x: x.split())
-# possible_moods = list(set(" ".join([mood for mood in music_df.mood.unique()]).split(" ")))
-# possible_moods.remove("")
 possible_moods = ["energico",
  "trasportante",
  "profondo",
@@ -41,13 +33,8 @@ possible_moods = ["energico",
  "potente",
  "cantato",
  "soft"]
-possible_lengths = music_df.duration.unique().tolist()
 
-possible_lengths_int = [int(d) for d in music_df.duration.unique().tolist()]
-possible_lengths_int.sort()
-possible_moods.sort()
-possible_lengths_s = " ".join([str(d) for d in possible_lengths])
-possible_moods_s = " ".join(possible_moods)
+#### FUNCTIONS ####
 
 def daily_music(bot):
 	global boring_time
@@ -86,7 +73,7 @@ def start(bot, update):
 	user = update.message["chat"]["id"]
 	USERS.add(user)
 	msg = "So, you want some music that I selected for Maria, huh?!\nOK, I'll send you random boring music every \
-	day at " + boring_time + " (GMT+2)\nI currently have " + str(number_of_tracks) + " boring pieces. \n\
+	day at " + boring_time + " (GMT+2)\nI currently have " + str(number_of_tracks) + " boring compositions. \n\
 	Try /music or /help"
 	bot.send_message(chat_id=update.message.chat_id, text=msg)
 	print(USERS)
@@ -99,7 +86,7 @@ def help(bot, update):
 		/start to start receiving random boring music every day at " + boring_time + " (GMT+2)\n\
 		/stop to stop receiving random boring music every day at " + boring_time + " (GMT+2) \n\
 		/test to see how many people are receiving random boring music every day\n\
-		/music to get a random boring piece\n\
+		/music to get a random boring music\n\
 		/filters to set filters on length in minutes and mood (example: /filters 4 soft) \n\
 		\n\
 		Possible lengths:\n" + possible_lengths_s + "\n\
@@ -149,11 +136,27 @@ def main():
 	updater.start_polling()
 	updater.idle()
 
-if __name__ == "__main__":
-	music_df = pd.read_csv(music_file, sep="\t", dtype=(str))
-	if os.path.isfile("users.pkl"):
-		USERS = pickle.load(open("users.pkl", "rb+"))
-	else:
-		USERS = set([])
-	main()
+#### GET DATA ###
 
+music_df = pd.read_csv(music_file, sep="\t", dtype=(str))
+number_of_tracks = music_df.shape[0]
+
+# TODO: remove hard-coded list and fix the following 2 lines
+# music_df.mood = music_df.mood.apply(lambda x: x.split())
+# possible_moods = list(set(" ".join([mood for mood in music_df.mood.unique()]).split(" ")))
+# possible_moods.remove("")
+possible_lengths = music_df.duration.unique().tolist()
+possible_lengths_int = [int(d) for d in music_df.duration.unique().tolist()]
+possible_lengths_int.sort()
+possible_moods.sort()
+possible_lengths_s = " ".join([str(d) for d in possible_lengths])
+possible_moods_s = " ".join(possible_moods)
+
+if os.path.isfile("users.pkl"):
+	USERS = pickle.load(open("users.pkl", "rb+"))
+else:
+	USERS = set([])
+
+
+if __name__ == "__main__":
+	main()
