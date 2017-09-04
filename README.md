@@ -11,8 +11,11 @@
 
 ### Current features:
 
-- get a randomly selected music everyday at 11AM (GMT+2)
+- get a randomly selected music everyday at 8:00 and 19:00 (GMT+2)
 - ask for music specifying length and mood you prefer at the moment
+- ask for music specifying length only
+- ask for music specifying mood only
+- ask for help
 
 -----------------
 
